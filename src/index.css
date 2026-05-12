@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --accent: #000000;
+  --text-main: #1d1d1f;
+  --bg-smoke: #f5f5f7;
+  --surface: #ffffff;
+  --secondary-bg: #e8e8ed;
+  --border: #d2d2d7;
+  --success: #34c759;
+  --success-bg: #eef9f2;
+  
+  --radius-xl: 24px;
+  --radius-pill: 50px;
+  
+  --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-smoke);
+  color: var(--text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  transition: var(--transition);
+}
+
+input {
+  font-family: inherit;
+  outline: none;
+  border: none;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-up {
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envido - Seguimiento Premium</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <style>
+        :root {
+            --accent: #007AFF;
+            --text-main: #172B4D;
+            --bg-smoke: #F5F5F7;
+            --surface: #FFFFFF;
+            --secondary-bg: #E5F1FF;
+            --border: #E5E5EA;
+            --radius-xl: 24px;
+            --radius-pill: 50px;
+            --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.04);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-smoke);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding-top: 100px;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 0 1.5rem; }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 80px; z-index: 1000;
+            display: flex; align-items: center;
+        }
+
+        .nav-content {
+            width: 100%; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem; font-weight: 700;
+            letter-spacing: -0.5px; cursor: pointer;
+        }
+
+        .btn-pill {
+            background: var(--surface); color: var(--accent);
+            padding: 10px 24px; border-radius: var(--radius-pill);
+            font-weight: 600; font-size: 0.9rem;
+            border: 1.5px solid var(--border);
+            cursor: pointer; transition: var(--transition);
+        }
+
+        /* Home Screen */
+        .hero-section { text-align: center; margin-top: 4rem; margin-bottom: 3rem; }
+        .hero-section h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 2rem; }
+
+        .carrier-logos { display: flex; justify-content: center; gap: 1.2rem; flex-wrap: wrap; }
+        .carrier-badge {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 8px 16px; background: rgba(0, 122, 255, 0.05);
+            border-radius: var(--radius-pill); color: rgba(0, 122, 255, 0.6);
+            font-weight: 500; font-size: 0.85rem;
+        }
+
+        .input-wrapper {
+            position: relative; background: var(--surface);
+            border-radius: var(--radius-xl); padding: 24px;
+            margin-bottom: 1.5rem; box-shadow: var(--shadow-soft);
+        }
+
+        .input-wrapper input {
+            width: 100%; font-size: 1.1rem; font-weight: 500;
+            border: none; outline: none; background: transparent;
+        }
+
+        .tooltip-trigger {
+            font-size: 0.85rem; color: var(--accent);
+            cursor: pointer; text-decoration: underline;
+            margin-top: 1rem; display: inline-block;
+        }
+
+        .btn-primary {
+            width: 100%; background: var(--accent); color: white;
+            padding: 18px; border-radius: var(--radius-xl);
+            font-size: 1.1rem; font-weight: 600; border: none;
+            cursor: pointer; transition: var(--transition);
+            box-shadow: 0 10px 20px rgba(0, 122, 255, 0.2);
+        }
+
+        .btn-primary:hover { transform: translateY(-2px); }
+
+        /* Results Screen */
+        #results-view { display: none; }
+
+        .status-card {
+            background: var(--surface); padding: 2rem;
+            border-radius: var(--radius-xl); margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .status-title { font-size: 1.5rem; font-weight: 700; color: var(--accent); display: block; }
+        .tracking-number { font-size: 0.9rem; opacity: 0.6; font-weight: 500; }
+
+        .timeline { display: flex; flex-direction: column; margin-bottom: 3rem; }
+        .timeline-item {
+            display: flex; gap: 1.5rem; padding: 1.5rem;
+            border-radius: 16px; transition: var(--transition);
+            position: relative;
+        }
+        .timeline-item:hover { background: var(--surface); transform: scale(1.02); box-shadow: var(--shadow-soft); }
+
+        .timeline-item:not(:last-child)::after {
+            content: ''; position: absolute; left: 41px; top: 60px;
+            bottom: -1.5rem; width: 2px; background: var(--border);
+        }
+
+        .timeline-icon {
+            width: 32px; height: 32px; background: var(--secondary-bg);
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-size: 1.2rem; z-index: 1;
+        }
+
+        .timeline-item.active .timeline-icon { background: var(--accent); color: white; }
+
+        .action-buttons { display: flex; flex-direction: column; gap: 1rem; }
+        .btn-secondary {
+            background: var(--secondary-bg); color: var(--accent);
+            padding: 18px; border-radius: var(--radius-xl);
+            font-weight: 600; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+        }
+
+        .btn-ghost {
+            background: transparent; color: var(--text-main);
+            padding: 12px; font-weight: 600; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+        }
+
+        .animate-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) {
+            .hero-section h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar glass">
+        <div class="container nav-content">
+            <div class="logo" onclick="showHome()">Envido</div>
+            <button class="btn-pill">Cotizar envío</button>
+        </div>
+    </nav>
+
+    <!-- Home View -->
+    <main id="home-view" class="container animate-up">
+        <div class="hero-section">
+            <h1>Consulta el estado de tu envío</h1>
+            <div class="carrier-logos">
+                <div class="carrier-badge">📦 Correo Arg</div>
+                <div class="carrier-badge">🚚 Andreani</div>
+                <div class="carrier-badge">🚛 OCASA</div>
+                <div class="carrier-badge">🚐 Urbano</div>
+            </div>
+        </div>
+
+        <form onsubmit="handleSearch(event)" class="search-form">
+            <div class="input-wrapper">
+                <input type="text" id="tracking-input" placeholder="Ingresa tu número de seguimiento" required>
+                <span class="tooltip-trigger" onclick="alert('El número se encuentra en el mail de confirmación de tu compra.')">
+                    ¿Dónde lo encuentro?
+                </span>
+            </div>
+            <button type="submit" class="btn-primary">Consultar</button>
+        </form>
+    </main>
+
+    <!-- Results View -->
+    <main id="results-view" class="container animate-up">
+        <div class="status-card">
+            <span class="status-title">Llega hoy</span>
+            <span class="tracking-number" id="display-tracking">#PK-123456</span>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item active">
+                <div class="timeline-icon">🚚</div>
+                <div class="timeline-content">
+                    <h3>Tu envío está en el último tramo del recorrido.</h3>
+                    <p>Hoy, 10:45 hs</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-marker" style="width:12px; height:12px; background:var(--border); border-radius:50%; margin:10px 10px 0; z-index:1;"></div>
+                <div class="timeline-content">
+                    <h3>Llegó al centro de distribución</h3>
+                    <p>Ayer, 18:20 hs</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-secondary">🔔 Recibir notificaciones</button>
+            <button class="btn-ghost" onclick="showHome()">Consultar otro envío ←</button>
+        </div>
+    </main>
+
+    <script>
+        function handleSearch(e) {
+            e.preventDefault();
+            const input = document.getElementById('tracking-input').value;
+            document.getElementById('display-tracking').innerText = '#' + input;
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('results-view').style.display = 'block';
+        }
+
+        function showHome() {
+            document.getElementById('home-view').style.display = 'block';
+            document.getElementById('results-view').style.display = 'none';
+            document.getElementById('tracking-input').value = '';
+        }
+    </script>
+</body>
+</html>
