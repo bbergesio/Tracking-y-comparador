@@ -133,24 +133,13 @@ function ParticleBackground() {
 
 const Logo = ({ onClick }) => (
   <div className="logo-mark" onClick={onClick}>
-    <svg
-      className="logo-icon"
-      width="26"
-      height="26"
-      viewBox="0 0 32 32"
-      fill="none"
-      aria-hidden="true"
-    >
-      {/* Route path: origin circle → bezier curve → destination diamond */}
+    <svg className="logo-icon" width="20" height="26" viewBox="0 0 22 28" aria-hidden="true">
       <path
-        d="M 6 26 C 5 13 27 19 27 8"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        fill="none"
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M11 0C4.92 0 0 4.92 0 11C0 16.5 3.5 21 7.5 24.5L11 28L14.5 24.5C18.5 21 22 16.5 22 11C22 4.92 17.08 0 11 0ZM11 16C8.24 16 6 13.76 6 11C6 8.24 8.24 6 11 6C13.76 6 16 8.24 16 11C16 13.76 13.76 16 11 16Z"
+        fill="currentColor"
       />
-      <circle cx="6" cy="26" r="3.2" fill="currentColor" />
-      <path d="M 27 4.5 L 30.5 8 L 27 11.5 L 23.5 8 Z" fill="currentColor" />
     </svg>
     <span className="logo-wordmark">envido</span>
   </div>

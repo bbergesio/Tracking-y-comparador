@@ -74,16 +74,16 @@
 .logo-mark {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
-  color: var(--text-main);
   user-select: none;
   text-decoration: none;
 }
 
 .logo-icon {
   flex-shrink: 0;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--text-main);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .logo-mark:hover .logo-icon {
@@ -91,13 +91,12 @@
 }
 
 .logo-wordmark {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.65rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
   color: var(--text-main);
   line-height: 1;
-  font-style: italic;
 }
 
 .nav-actions {
