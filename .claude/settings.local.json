@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(winget upgrade *)",
+      "Bash(npx skills *)",
+      "Bash(node *)",
+      "Bash(npm run *)",
+      "Bash(Get-Content \"C:\\\\Users\\\\ALERNE~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-alerner-pickit-Documents-Tracking-y-comparador\\\\5219fc2f-c515-4ad2-8188-83f97aba01bf\\\\tasks\\\\b5rjxx92v.output\")",
+      "Bash(Select-Object -Last 15)",
+      "Bash(Start-Sleep -Seconds 5)",
+      "Bash(Get-Content \"C:\\\\Users\\\\ALERNE~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-alerner-pickit-Documents-Tracking-y-comparador\\\\5219fc2f-c515-4ad2-8188-83f97aba01bf\\\\tasks\\\\bc1py3dzw.output\")",
+      "Skill(impeccable)",
+      "Bash(npx vite *)"
+    ]
+  }
+}

@@ -1,5 +1,160 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
+
+function TypewriterText({ text, delay = 0, speed = 55, eraseSpeed = 28, pauseAfterType = 2400, pauseAfterErase = 500 }) {
+  const [displayed, setDisplayed] = useState('');
+  const [phase, setPhase] = useState('init');
+
+  useEffect(() => {
+    let t;
+    if (phase === 'init') {
+      t = setTimeout(() => setPhase('typing'), delay);
+    } else if (phase === 'typing') {
+      if (displayed.length < text.length) {
+        t = setTimeout(() => setDisplayed(text.slice(0, displayed.length + 1)), speed);
+      } else {
+        t = setTimeout(() => setPhase('erasing'), pauseAfterType);
+      }
+    } else if (phase === 'erasing') {
+      if (displayed.length > 0) {
+        t = setTimeout(() => setDisplayed(displayed.slice(0, -1)), eraseSpeed);
+      } else {
+        t = setTimeout(() => setPhase('typing'), pauseAfterErase);
+      }
+    }
+    return () => clearTimeout(t);
+  }, [phase, displayed, text, delay, speed, eraseSpeed, pauseAfterType, pauseAfterErase]);
+
+  return (
+    <>
+      {displayed}
+      <span className="tw-cursor">|</span>
+    </>
+  );
+}
+
+function ParticleBackground() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const mouse = { x: -2000, y: -2000 };
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+
+    const onMouseMove = (e) => { mouse.x = e.clientX; mouse.y = e.clientY; };
+    const onMouseLeave = () => { mouse.x = -2000; mouse.y = -2000; };
+
+    window.addEventListener('resize', resize, { passive: true });
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+    window.addEventListener('mouseleave', onMouseLeave, { passive: true });
+
+    const GRAYS = ['55,55,60', '90,90,95', '125,125,130', '160,160,165', '40,40,45', '110,110,115', '175,175,180'];
+    const count = Math.min(100, Math.floor((window.innerWidth * window.innerHeight) / 10000));
+
+    const particles = Array.from({ length: count }, () => {
+      const tvx = (Math.random() - 0.5) * 0.6;
+      const tvy = (Math.random() - 0.5) * 0.6;
+      return {
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: Math.random() * 3 + 0.6,
+        vx: tvx,
+        vy: tvy,
+        tvx,
+        tvy,
+        opacity: Math.random() * 0.38 + 0.12,
+        opacityDelta: (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.004 + 0.001),
+        col: GRAYS[Math.floor(Math.random() * GRAYS.length)],
+      };
+    });
+
+    const MOUSE_RADIUS = 200;
+    const MOUSE_FORCE = 0.018;
+    const RESTORE = 0.025;
+    const MAX_SPEED = 3.0;
+
+    let raf;
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        // Mouse attraction
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < MOUSE_RADIUS && dist > 0) {
+          const force = (1 - dist / MOUSE_RADIUS) * MOUSE_FORCE;
+          p.vx += (dx / dist) * force;
+          p.vy += (dy / dist) * force;
+        }
+
+        // Drift back to natural velocity
+        p.vx += (p.tvx - p.vx) * RESTORE;
+        p.vy += (p.tvy - p.vy) * RESTORE;
+
+        // Speed cap
+        const spd = Math.hypot(p.vx, p.vy);
+        if (spd > MAX_SPEED) { p.vx = (p.vx / spd) * MAX_SPEED; p.vy = (p.vy / spd) * MAX_SPEED; }
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.opacity += p.opacityDelta;
+
+        if (p.opacity >= 0.52 || p.opacity <= 0.1) p.opacityDelta *= -1;
+        if (p.x < -8) p.x = canvas.width + 8;
+        if (p.x > canvas.width + 8) p.x = -8;
+        if (p.y < -8) p.y = canvas.height + 8;
+        if (p.y > canvas.height + 8) p.y = -8;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.col},${p.opacity})`;
+        ctx.fill();
+      });
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseleave', onMouseLeave);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="particle-canvas" />;
+}
+
+const Logo = ({ onClick }) => (
+  <div className="logo-mark" onClick={onClick}>
+    <svg
+      className="logo-icon"
+      width="26"
+      height="26"
+      viewBox="0 0 32 32"
+      fill="none"
+      aria-hidden="true"
+    >
+      {/* Route path: origin circle → bezier curve → destination diamond */}
+      <path
+        d="M 6 26 C 5 13 27 19 27 8"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <circle cx="6" cy="26" r="3.2" fill="currentColor" />
+      <path d="M 27 4.5 L 30.5 8 L 27 11.5 L 23.5 8 Z" fill="currentColor" />
+    </svg>
+    <span className="logo-wordmark">envido</span>
+  </div>
+);
 
 const carriers = [
   { name: 'Correo Argentino', logo: '/logos/Logotipo_correo_argentino.png' },
@@ -58,6 +213,7 @@ function App() {
   const [showTooltip, setShowTooltip] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [toast, setToast] = useState(null);
+  const [navScrolled, setNavScrolled] = useState(false);
 
   // Form States
   const [quoteData, setQuoteData] = useState({ from: '', to: '', w: '', h: '', l: '' });
@@ -76,6 +232,13 @@ function App() {
       return () => clearTimeout(timer);
     }
   }, [toast]);
+
+  // Navbar glass on scroll
+  useEffect(() => {
+    const onScroll = () => setNavScrolled(window.scrollY > 24);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   // Actions
   const handleTrackingSearch = (e) => {
@@ -115,6 +278,8 @@ function App() {
   };
 
   return (
+    <>
+    {view === 'tracking-home' && <ParticleBackground />}
     <div className="app">
       {/* Toast Notification */}
       {toast && <div className="toast fade-in">{toast}</div>}
@@ -231,9 +396,9 @@ function App() {
       )}
 
       {/* Navigation Bar */}
-      <nav className="navbar">
+      <nav className={`navbar${navScrolled ? ' navbar--scrolled' : ''}`}>
         <div className="container nav-content">
-          <div className="logo" onClick={resetToHome}>Envido</div>
+          <Logo onClick={resetToHome} />
           
           <div className="nav-actions">
             {view === 'dashboard' || view === 'payment' || view === 'ship-data' ? (
@@ -266,9 +431,23 @@ function App() {
         {/* PANTALLA 1: TRACKING HOME */}
         {view === 'tracking-home' && (
           <main className="container tracking-home-view animate-up">
+            <div className="hero-ambient" aria-hidden="true" />
+            <svg className="hero-noise-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <filter id="fn" x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
+                <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch">
+                  <animate attributeName="baseFrequency" dur="42s"
+                    values="0.65;0.48;0.72;0.55;0.65" keyTimes="0;0.25;0.5;0.75;1"
+                    calcMode="spline" keySplines="0.42 0 0.58 1;0.42 0 0.58 1;0.42 0 0.58 1;0.42 0 0.58 1"
+                    repeatCount="indefinite" />
+                </feTurbulence>
+                <feColorMatrix type="saturate" values="0" />
+              </filter>
+              <rect width="100%" height="100%" fill="white" filter="url(#fn)" />
+            </svg>
+            <h1 className="single-line-title">
+              <TypewriterText text="Seguí tus envíos en un solo lugar" delay={150} speed={38} />
+            </h1>
             <div className="search-container">
-              <h1 className="single-line-title">Seguí tus envíos en un solo lugar</h1>
-              
               <form className="search-form" onSubmit={handleTrackingSearch}>
                 <div className="input-wrapper shadow">
                   <input 
@@ -903,6 +1082,7 @@ function App() {
         </div>
       )}
     </div>
+    </>
   );
 }
 
