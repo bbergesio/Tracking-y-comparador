@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
-function TypewriterText({ text, delay = 0, speed = 55, eraseSpeed = 28, pauseAfterType = 2400, pauseAfterErase = 500 }) {
+function TypewriterText({ text, delay = 0, speed = 55 }) {
   const [displayed, setDisplayed] = useState('');
   const [phase, setPhase] = useState('init');
 
@@ -13,22 +13,16 @@ function TypewriterText({ text, delay = 0, speed = 55, eraseSpeed = 28, pauseAft
       if (displayed.length < text.length) {
         t = setTimeout(() => setDisplayed(text.slice(0, displayed.length + 1)), speed);
       } else {
-        t = setTimeout(() => setPhase('erasing'), pauseAfterType);
-      }
-    } else if (phase === 'erasing') {
-      if (displayed.length > 0) {
-        t = setTimeout(() => setDisplayed(displayed.slice(0, -1)), eraseSpeed);
-      } else {
-        t = setTimeout(() => setPhase('typing'), pauseAfterErase);
+        setPhase('done');
       }
     }
     return () => clearTimeout(t);
-  }, [phase, displayed, text, delay, speed, eraseSpeed, pauseAfterType, pauseAfterErase]);
+  }, [phase, displayed, text, delay, speed]);
 
   return (
     <>
       {displayed}
-      <span className="tw-cursor">|</span>
+      <span className={`tw-cursor ${phase === 'done' ? 'tw-cursor--done' : ''}`}>|</span>
     </>
   );
 }
@@ -203,6 +197,7 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [toast, setToast] = useState(null);
   const [navScrolled, setNavScrolled] = useState(false);
+  const [showTrackingInput, setShowTrackingInput] = useState(false);
 
   // Form States
   const [quoteData, setQuoteData] = useState({ from: '', to: '', w: '', h: '', l: '' });
@@ -407,9 +402,7 @@ function App() {
                 <button className="btn-text">Iniciar sesión</button>
                 <button className="btn-pill accent-bg" onClick={() => setView('register')}>Crear cuenta</button>
               </>
-            ) : (
-              <button className="btn-pill" onClick={() => setView('quoter-home')}>Cotizar envío</button>
-            )}
+            ) : null}
           </div>
         </div>
       </nav>
@@ -420,53 +413,96 @@ function App() {
         {/* PANTALLA 1: TRACKING HOME */}
         {view === 'tracking-home' && (
           <main className="container tracking-home-view animate-up">
-            <div className="hero-ambient" aria-hidden="true" />
-            <svg className="hero-noise-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-              <filter id="fn" x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
-                <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch">
-                  <animate attributeName="baseFrequency" dur="42s"
-                    values="0.65;0.48;0.72;0.55;0.65" keyTimes="0;0.25;0.5;0.75;1"
-                    calcMode="spline" keySplines="0.42 0 0.58 1;0.42 0 0.58 1;0.42 0 0.58 1;0.42 0 0.58 1"
-                    repeatCount="indefinite" />
-                </feTurbulence>
-                <feColorMatrix type="saturate" values="0" />
-              </filter>
-              <rect width="100%" height="100%" fill="white" filter="url(#fn)" />
-            </svg>
-            <h1 className="single-line-title">
-              <TypewriterText text="Seguí tus envíos en un solo lugar" delay={150} speed={38} />
-            </h1>
-            <div className="search-container">
-              <form className="search-form" onSubmit={handleTrackingSearch}>
-                <div className="input-wrapper shadow">
-                  <input 
-                    type="text" 
-                    placeholder="Ingresa tu número de seguimiento" 
-                    value={trackingId}
-                    onChange={(e) => setTrackingId(e.target.value)}
+
+            <div className="new-hero-layout">
+              <div className="hero-left-col">
+                <h1 className="hero-title">
+                  <TypewriterText text="Compara, elige y envía. Así de simple." delay={150} speed={38} />
+                </h1>
+                <div className="hero-ctas">
+                  <button className="btn-primary" onClick={() => setView('quoter-home')}>Cotizar con descuento</button>
+                  <button className="btn-secondary" onClick={() => document.getElementById('tracking-section').scrollIntoView({ behavior: 'smooth' })}>
+                    Seguir envío
+                  </button>
+                </div>
+              </div>
+              <div className="hero-right-col">
+                <div className="hero-animation-placeholder">
+                  <video 
+                    src="/Animación_hero.mp4" 
+                    autoPlay 
+                    muted 
+                    loop 
+                    playsInline 
+                    className="hero-animation-video"
                   />
                 </div>
-                
-                <div className="search-helpers centered">
-                  <span className="tooltip-trigger" onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
-                    ¿Dónde lo encuentro?
-                  </span>
-                  {showTooltip && <div className="tooltip-box">En el mail de confirmación de tu compra.</div>}
-                </div>
-                
-                <button type="submit" className="btn-primary">Consultar</button>
-              </form>
-            </div>
-
-            <div className="carrier-logos-footer">
-              <div className="carrier-logos-row">
-                {carriers.map(c => (
-                  <div key={c.name} className="carrier-badge">
-                    <img src={c.logo} alt={c.name} className="carrier-logo-img" />
-                  </div>
-                ))}
               </div>
             </div>
+
+
+
+            {/* Uber-style Step Cards Section */}
+            <section className="uber-steps-section">
+              <h2 className="steps-title">Tus envíos en solo en 4 pasos</h2>
+              <div className="steps-grid">
+                <div className="step-card uber-card">
+                  <div className="step-number-badge">
+                    <span className="step-number">1</span>
+                  </div>
+                  <div className="step-content">
+                    <h3 className="step-heading">Cotiza</h3>
+                    <p className="step-description">Encuentra las mejores tarifas entre los principales correos del mercado.</p>
+                  </div>
+                </div>
+                <div className="step-card uber-card">
+                  <div className="step-number-badge">
+                    <span className="step-number">2</span>
+                  </div>
+                  <div className="step-content">
+                    <h3 className="step-heading">Paga e Imprime</h3>
+                    <p className="step-description">Genera tus etiquetas de envío de forma inmediata y segura.</p>
+                  </div>
+                </div>
+                <div className="step-card uber-card">
+                  <div className="step-number-badge">
+                    <span className="step-number">3</span>
+                  </div>
+                  <div className="step-content">
+                    <h3 className="step-heading">Despacha</h3>
+                    <p className="step-description">Deja tus paquetes en el punto de retiro más cercano a ti.</p>
+                  </div>
+                </div>
+                <div className="step-card uber-card">
+                  <div className="step-number-badge">
+                    <span className="step-number">4</span>
+                  </div>
+                  <div className="step-content">
+                    <h3 className="step-heading">Rastrea</h3>
+                    <p className="step-description">Consulta el tracking en tiempo real y mantén el control de tus envíos.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Nueva sección de Tracking debajo de los pasos */}
+            <section id="tracking-section" className="tracking-section">
+              <div className="tracking-section-content">
+                <h2 className="tracking-title">Seguí tus envíos en un solo lugar</h2>
+                <form className="tracking-section-form" onSubmit={handleTrackingSearch}>
+                  <div className="tracking-input-wrapper">
+                    <input 
+                      type="text" 
+                      placeholder="Ingresa tu número de seguimiento" 
+                      value={trackingId}
+                      onChange={(e) => setTrackingId(e.target.value)}
+                    />
+                  </div>
+                  <a href="#help" className="tracking-help-link" onClick={(e) => e.preventDefault()}>¿Dónde lo encuentro?</a>
+                  <button type="submit" className="btn-primary tracking-submit-btn">Consultar</button>
+                </form>
+              </div>
+            </section>
           </main>
         )}
 
