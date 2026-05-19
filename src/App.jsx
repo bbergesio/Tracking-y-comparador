@@ -27,6 +27,7 @@ function TypewriterText({ text, delay = 0, speed = 55 }) {
   );
 }
 
+
 function ParticleBackground() {
   const canvasRef = useRef(null);
 
@@ -58,10 +59,7 @@ function ParticleBackground() {
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
         r: Math.random() * 3 + 0.6,
-        vx: tvx,
-        vy: tvy,
-        tvx,
-        tvy,
+        vx: tvx, vy: tvy, tvx, tvy,
         opacity: Math.random() * 0.38 + 0.12,
         opacityDelta: (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.004 + 0.001),
         col: GRAYS[Math.floor(Math.random() * GRAYS.length)],
@@ -77,7 +75,6 @@ function ParticleBackground() {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(p => {
-        // Mouse attraction
         const dx = mouse.x - p.x;
         const dy = mouse.y - p.y;
         const dist = Math.hypot(dx, dy);
@@ -86,25 +83,18 @@ function ParticleBackground() {
           p.vx += (dx / dist) * force;
           p.vy += (dy / dist) * force;
         }
-
-        // Drift back to natural velocity
         p.vx += (p.tvx - p.vx) * RESTORE;
         p.vy += (p.tvy - p.vy) * RESTORE;
-
-        // Speed cap
         const spd = Math.hypot(p.vx, p.vy);
         if (spd > MAX_SPEED) { p.vx = (p.vx / spd) * MAX_SPEED; p.vy = (p.vy / spd) * MAX_SPEED; }
-
         p.x += p.vx;
         p.y += p.vy;
         p.opacity += p.opacityDelta;
-
         if (p.opacity >= 0.52 || p.opacity <= 0.1) p.opacityDelta *= -1;
         if (p.x < -8) p.x = canvas.width + 8;
         if (p.x > canvas.width + 8) p.x = -8;
         if (p.y < -8) p.y = canvas.height + 8;
         if (p.y > canvas.height + 8) p.y = -8;
-
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${p.col},${p.opacity})`;
@@ -124,6 +114,89 @@ function ParticleBackground() {
 
   return <canvas ref={canvasRef} className="particle-canvas" />;
 }
+
+// ─── Step illustrations ──────────────────────────────────────────────────────
+
+const IllusCotiza = () => (
+  <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="40" cy="40" r="40" fill="#F0EEFF"/>
+    <rect x="12" y="24" width="24" height="32" rx="5" fill="#C4B5FD" opacity="0.65"/>
+    <rect x="16" y="30" width="14" height="2" rx="1" fill="white" opacity="0.85"/>
+    <rect x="16" y="35" width="10" height="2" rx="1" fill="white" opacity="0.6"/>
+    <rect x="16" y="40" width="12" height="2" rx="1" fill="white" opacity="0.6"/>
+    <rect x="28" y="18" width="28" height="38" rx="5" fill="#7C3AED"/>
+    <rect x="33" y="25" width="16" height="2.5" rx="1" fill="white" opacity="0.95"/>
+    <rect x="33" y="31" width="11" height="2" rx="1" fill="white" opacity="0.5"/>
+    <rect x="33" y="39" width="19" height="10" rx="3" fill="white" opacity="0.12"/>
+    <rect x="35" y="41" width="15" height="2.5" rx="1" fill="white" opacity="0.95"/>
+    <rect x="35" y="45.5" width="9" height="1.5" rx="0.75" fill="white" opacity="0.55"/>
+    <circle cx="60" cy="22" r="9" fill="#34D399"/>
+    <path d="M56.5 22L59.2 24.8L64 19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="14" cy="67" r="12" fill="white"/>
+    <circle cx="14" cy="67" r="10" fill="#7C3AED"/>
+    <text x="14" y="67" textAnchor="middle" dominantBaseline="middle" fill="white" fontSize="12" fontWeight="700" fontFamily="sans-serif">1</text>
+  </svg>
+);
+
+const IllusPaga = () => (
+  <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="40" cy="40" r="40" fill="#FFF0F6"/>
+    <rect x="8" y="24" width="42" height="28" rx="6" fill="#F472B6"/>
+    <rect x="8" y="24" width="42" height="10" rx="6" fill="#EC4899"/>
+    <rect x="14" y="27" width="8" height="6" rx="2" fill="#FBCFE8" opacity="0.9"/>
+    <rect x="14" y="37" width="12" height="3" rx="1.5" fill="white" opacity="0.65"/>
+    <rect x="14" y="42" width="8" height="2" rx="1" fill="white" opacity="0.45"/>
+    <rect x="40" y="33" width="26" height="32" rx="4" fill="white" opacity="0.96"/>
+    <rect x="44" y="38" width="14" height="2" rx="1" fill="#F472B6" opacity="0.8"/>
+    <rect x="44" y="42" width="16" height="1.5" rx="0.75" fill="#F472B6" opacity="0.45"/>
+    <rect x="44" y="46" width="12" height="1.5" rx="0.75" fill="#F472B6" opacity="0.45"/>
+    <rect x="44" y="52" width="2" height="7" rx="0.5" fill="#EC4899" opacity="0.5"/>
+    <rect x="47.5" y="52" width="1.5" height="7" rx="0.5" fill="#EC4899" opacity="0.5"/>
+    <rect x="50.5" y="52" width="2.5" height="7" rx="0.5" fill="#EC4899" opacity="0.5"/>
+    <rect x="54.5" y="52" width="1.5" height="7" rx="0.5" fill="#EC4899" opacity="0.5"/>
+    <rect x="57.5" y="52" width="2" height="7" rx="0.5" fill="#EC4899" opacity="0.5"/>
+    <circle cx="14" cy="67" r="12" fill="white"/>
+    <circle cx="14" cy="67" r="10" fill="#EC4899"/>
+    <text x="14" y="67" textAnchor="middle" dominantBaseline="middle" fill="white" fontSize="12" fontWeight="700" fontFamily="sans-serif">2</text>
+  </svg>
+);
+
+const IllusDespacha = () => (
+  <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="40" cy="40" r="40" fill="#EFF6FF"/>
+    <rect x="14" y="40" width="38" height="24" rx="4" fill="#3B82F6"/>
+    <rect x="14" y="30" width="38" height="12" rx="4" fill="#2563EB"/>
+    <rect x="30" y="30" width="5" height="34" fill="#1D4ED8" opacity="0.3"/>
+    <path d="M14 30Q14 21 21 19L33 28L14 30Z" fill="#60A5FA" opacity="0.75"/>
+    <path d="M52 30Q52 21 45 19L33 28L52 30Z" fill="#93C5FD" opacity="0.75"/>
+    <path d="M52 9C47.2 9 43 13.2 43 18C43 24.2 52 33 52 33C52 33 61 24.2 61 18C61 13.2 56.8 9 52 9Z" fill="#EF4444"/>
+    <circle cx="52" cy="18" r="4" fill="white"/>
+    <circle cx="14" cy="67" r="12" fill="white"/>
+    <circle cx="14" cy="67" r="10" fill="#3B82F6"/>
+    <text x="14" y="67" textAnchor="middle" dominantBaseline="middle" fill="white" fontSize="12" fontWeight="700" fontFamily="sans-serif">3</text>
+  </svg>
+);
+
+const IllusRastrea = () => (
+  <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="40" cy="40" r="40" fill="#ECFDF5"/>
+    <path d="M10 62C18 62 22 40 35 36C46 32 50 48 66 40" stroke="#34D399" strokeWidth="3.5" strokeLinecap="round" fill="none"/>
+    <circle cx="10" cy="62" r="4.5" fill="#10B981"/>
+    <circle cx="10" cy="62" r="8" fill="#10B981" opacity="0.18"/>
+    <circle cx="66" cy="40" r="6" fill="#059669"/>
+    <circle cx="66" cy="40" r="12" fill="#34D399" opacity="0.15"/>
+    <rect x="26" y="14" width="24" height="15" rx="3" fill="#065F46"/>
+    <rect x="19" y="19" width="10" height="10" rx="2" fill="#047857"/>
+    <rect x="21" y="21" width="6" height="5" rx="1" fill="#6EE7B7" opacity="0.55"/>
+    <circle cx="24" cy="31" r="4" fill="#6EE7B7"/>
+    <circle cx="24" cy="31" r="2.2" fill="#ECFDF5"/>
+    <circle cx="40" cy="31" r="4" fill="#6EE7B7"/>
+    <circle cx="40" cy="31" r="2.2" fill="#ECFDF5"/>
+    <circle cx="14" cy="67" r="12" fill="white"/>
+    <circle cx="14" cy="67" r="10" fill="#059669"/>
+    <text x="14" y="67" textAnchor="middle" dominantBaseline="middle" fill="white" fontSize="12" fontWeight="700" fontFamily="sans-serif">4</text>
+  </svg>
+);
 
 const Logo = ({ onClick }) => (
   <div className="logo-mark" onClick={onClick}>
@@ -223,6 +296,25 @@ function App() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // Scroll reveal — re-observes on view change so new DOM elements are picked up
+  useEffect(() => {
+    const els = document.querySelectorAll('[data-reveal]');
+    if (!els.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+    els.forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, [view]);
 
   // Actions
   const handleTrackingSearch = (e) => {
@@ -417,8 +509,9 @@ function App() {
             <div className="new-hero-layout">
               <div className="hero-left-col">
                 <h1 className="hero-title">
-                  <TypewriterText text="Compara, elige y envía. Así de simple." delay={150} speed={38} />
+                  <TypewriterText text="Compara, elige y envía. Así de simple" delay={150} speed={38} />
                 </h1>
+                <p className="hero-subtitle">Accedé a los mejores precios de todos los correos, en un solo lugar.</p>
                 <div className="hero-ctas">
                   <button className="btn-primary" onClick={() => setView('quoter-home')}>Cotizar con descuento</button>
                   <button className="btn-secondary" onClick={() => document.getElementById('tracking-section').scrollIntoView({ behavior: 'smooth' })}>
@@ -428,55 +521,45 @@ function App() {
               </div>
               <div className="hero-right-col">
                 <div className="hero-animation-placeholder">
-                  <video 
-                    src="/Animación_hero.mp4" 
-                    autoPlay 
-                    muted 
-                    loop 
-                    playsInline 
+                  <video
+                    src="/Animación_hero.mp4"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
                     className="hero-animation-video"
                   />
                 </div>
               </div>
             </div>
 
-
-
             {/* Uber-style Step Cards Section */}
             <section className="uber-steps-section">
-              <h2 className="steps-title">Tus envíos en solo en 4 pasos</h2>
+              <h2 className="steps-title" data-reveal>Tus envíos en solo 4 pasos</h2>
               <div className="steps-grid">
-                <div className="step-card uber-card">
-                  <div className="step-number-badge">
-                    <span className="step-number">1</span>
-                  </div>
+                <div className="step-card uber-card" data-reveal style={{transitionDelay:'0.08s'}}>
+                  <div className="step-illustration"><IllusCotiza /></div>
                   <div className="step-content">
                     <h3 className="step-heading">Cotiza</h3>
                     <p className="step-description">Encuentra las mejores tarifas entre los principales correos del mercado.</p>
                   </div>
                 </div>
-                <div className="step-card uber-card">
-                  <div className="step-number-badge">
-                    <span className="step-number">2</span>
-                  </div>
+                <div className="step-card uber-card" data-reveal style={{transitionDelay:'0.18s'}}>
+                  <div className="step-illustration"><IllusPaga /></div>
                   <div className="step-content">
                     <h3 className="step-heading">Paga e Imprime</h3>
                     <p className="step-description">Genera tus etiquetas de envío de forma inmediata y segura.</p>
                   </div>
                 </div>
-                <div className="step-card uber-card">
-                  <div className="step-number-badge">
-                    <span className="step-number">3</span>
-                  </div>
+                <div className="step-card uber-card" data-reveal style={{transitionDelay:'0.28s'}}>
+                  <div className="step-illustration"><IllusDespacha /></div>
                   <div className="step-content">
                     <h3 className="step-heading">Despacha</h3>
                     <p className="step-description">Deja tus paquetes en el punto de retiro más cercano a ti.</p>
                   </div>
                 </div>
-                <div className="step-card uber-card">
-                  <div className="step-number-badge">
-                    <span className="step-number">4</span>
-                  </div>
+                <div className="step-card uber-card" data-reveal style={{transitionDelay:'0.38s'}}>
+                  <div className="step-illustration"><IllusRastrea /></div>
                   <div className="step-content">
                     <h3 className="step-heading">Rastrea</h3>
                     <p className="step-description">Consulta el tracking en tiempo real y mantén el control de tus envíos.</p>
@@ -488,8 +571,8 @@ function App() {
             {/* Nueva sección de Tracking debajo de los pasos */}
             <section id="tracking-section" className="tracking-section">
               <div className="tracking-section-content">
-                <h2 className="tracking-title">Seguí tus envíos en un solo lugar</h2>
-                <form className="tracking-section-form" onSubmit={handleTrackingSearch}>
+                <h2 className="tracking-title" data-reveal>Seguí tus envíos en un solo lugar</h2>
+                <form className="tracking-section-form" onSubmit={handleTrackingSearch} data-reveal style={{transitionDelay:'0.15s'}}>
                   <div className="tracking-input-wrapper">
                     <input 
                       type="text" 

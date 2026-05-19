@@ -10,7 +10,11 @@
       "Bash(Start-Sleep -Seconds 5)",
       "Bash(Get-Content \"C:\\\\Users\\\\ALERNE~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-alerner-pickit-Documents-Tracking-y-comparador\\\\5219fc2f-c515-4ad2-8188-83f97aba01bf\\\\tasks\\\\bc1py3dzw.output\")",
       "Skill(impeccable)",
-      "Bash(npx vite *)"
+      "Bash(npx vite *)",
+      "Bash(npm install *)",
+      "Bash(npm list *)",
+      "Bash(Remove-Item *)",
+      "Bash(npm uninstall *)"
     ]
   }
 }
