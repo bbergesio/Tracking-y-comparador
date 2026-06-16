@@ -253,11 +253,8 @@ const results = [
 ];
 
 const PickitLogo = () => (
-  <div className="pickit-mini-logo">
-    <svg width="60" height="24" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M15.5 25.5C15.5 25.5 5.5 21.5 5.5 13.5C5.5 5.5 15.5 -10.5 30.5 -14.5C45.5 -18.5 51.5 -1.5 59.5 6.5C67.5 14.5 80.5 10.5 88.5 14.5" stroke="#FF6B00" strokeWidth="4" strokeLinecap="round"/>
-      <text x="35" y="28" fill="#FF6B00" fontSize="22" fontWeight="900" fontFamily="Inter, sans-serif">pickit</text>
-    </svg>
+  <div className="pickit-mini-logo" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <img src="/logos/Logotipo_pickit.svg" alt="Pickit" style={{ height: '24px', width: 'auto', objectFit: 'contain' }} />
   </div>
 );
 
